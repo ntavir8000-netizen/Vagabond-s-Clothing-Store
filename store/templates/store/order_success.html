@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Placed | Vagabond's</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        :root {
+            --ink: #1f211f;
+            --cream: #f6f3ed;
+            --white: #fffefa;
+            --muted: #777a73;
+            --line: #e6e2da;
+            --accent: #b35f3e;
+            --green: #46584a;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            background: var(--cream);
+            color: var(--ink);
+            font-family: Arial, sans-serif;
+        }
+
+        .announcement {
+            padding: 9px 16px;
+            background: var(--green);
+            color: white;
+            text-align: center;
+            font-size: 12px;
+            letter-spacing: 0.08em;
+        }
+
+        header {
+            background: var(--white);
+            border-bottom: 1px solid var(--line);
+        }
+
+        .navigation {
+            max-width: 1100px;
+            min-height: 76px;
+            margin: 0 auto;
+            padding: 0 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand {
+            color: var(--ink);
+            font-family: Georgia, serif;
+            font-size: 26px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        main {
+            width: 100%;
+            max-width: 760px;
+            margin: auto;
+            padding: 55px 24px 70px;
+            animation: fade-up 600ms ease-out both;
+        }
+
+        .confirmation-card {
+            position: relative;
+            overflow: hidden;
+            padding: clamp(28px, 6vw, 58px);
+            background: var(--white);
+            border: 1px solid var(--line);
+        }
+
+        .confirmation-card::before {
+            content: "V";
+            position: absolute;
+            top: -55px;
+            right: 10px;
+            color: var(--green);
+            font-family: Georgia, serif;
+            font-size: 240px;
+            font-style: italic;
+            line-height: 1;
+            opacity: 0.045;
+            pointer-events: none;
+            user-select: none;
+        }
+
+        .confirmation-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .success-mark {
+            width: 52px;
+            height: 52px;
+            margin-bottom: 25px;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            background: #e3eadf;
+            color: var(--green);
+            font-size: 25px;
+        }
+
+        .eyebrow {
+            margin: 0 0 10px;
+            color: var(--accent);
+            font-size: 11px;
+            font-weight: bold;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            margin: 0 0 14px;
+            font-family: Georgia, serif;
+            font-size: clamp(36px, 6vw, 55px);
+            font-weight: normal;
+            letter-spacing: -0.04em;
+            line-height: 1.05;
+        }
+
+        .intro {
+            margin: 0 0 28px;
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .order-number {
+            margin: 0 0 22px;
+            padding: 16px;
+            background: #f0eee7;
+            color: var(--ink);
+            font-size: 16px;
+        }
+
+        .order-number strong {
+            color: var(--accent);
+        }
+
+        .order-details {
+            margin: 0;
+            border-top: 1px solid var(--line);
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 18px;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--line);
+            font-size: 14px;
+        }
+
+        .detail-row dt {
+            color: var(--muted);
+        }
+
+        .detail-row dd {
+            margin: 0;
+            text-align: right;
+            font-weight: bold;
+        }
+
+        .total-row dd {
+            color: var(--accent);
+            font-size: 18px;
+        }
+
+        .payment-note {
+            margin: 22px 0 0;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        .button {
+            min-height: 46px;
+            padding: 0 18px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid var(--ink);
+            background: var(--ink);
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 0.06em;
+            text-decoration: none;
+            text-transform: uppercase;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+
+        .button:hover {
+            border-color: var(--accent);
+            background: var(--accent);
+        }
+
+        .button-secondary {
+            border-color: var(--line);
+            background: transparent;
+            color: var(--ink);
+        }
+
+        .button-secondary:hover {
+            border-color: var(--accent);
+            background: transparent;
+            color: var(--accent);
+        }
+
+        footer {
+            padding: 26px 20px;
+            background: var(--ink);
+            color: #f4f1ea;
+            text-align: center;
+        }
+
+        footer p {
+            margin: 0;
+            font-family: Georgia, serif;
+            font-size: 17px;
+        }
+
+        @keyframes fade-up {
+            from {
+                opacity: 0;
+                transform: translateY(14px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .navigation {
+                min-height: 68px;
+                padding: 0 18px;
+            }
+
+            main {
+                padding: 35px 16px 50px;
+            }
+
+            .detail-row {
+                font-size: 13px;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .button {
+                width: 100%;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+ 
+    <header>
+        <div class="navigation">
+            <a class="brand" href="{% url 'home' %}">Vagabond's</a>
+        </div>
+    </header>
+
+    <main>
+        <section class="confirmation-card">
+            <div class="confirmation-content">
+                <div class="success-mark" aria-hidden="true">✓</div>
+
+                <p class="eyebrow">Order received</p>
+                <h1>Thank you for choosing Vagabond's.</h1>
+                <p class="intro">
+                    Your order has been placed. Keep your order number so you
+                    can check its progress later.
+                </p>
+
+                <p class="order-number">
+                    Order number: <strong>#{{ order.id }}</strong>
+                </p>
+
+                <dl class="order-details">
+                    <div class="detail-row">
+                        <dt>Delivery area</dt>
+                        <dd>{{ order.get_delivery_area_display }}</dd>
+                    </div>
+
+                    <div class="detail-row">
+                        <dt>Delivery fee</dt>
+                        <dd>৳{{ order.delivery_fee|floatformat:2 }}</dd>
+                    </div>
+
+                    <div class="detail-row total-row">
+                        <dt>Order total</dt>
+                        <dd>৳{{ order.total|floatformat:2 }}</dd>
+                    </div>
+                </dl>
+
+                <p class="payment-note">
+                    Payment method: <strong>Cash on Delivery</strong>
+                </p>
+
+                <div class="actions">
+                    <a
+                        class="button"
+                        href="{% url 'track_order' %}?order_id={{ order.id }}"
+                    >
+                        Track this order
+                    </a>
+                    <a class="button button-secondary" href="{% url 'home' %}">
+                        Return to shop
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Vagabond's — Made for everyday comfort.</p>
+    </footer>
+</body>
+</html>

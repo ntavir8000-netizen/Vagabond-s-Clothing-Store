@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart | Vagabond's</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        :root {
+            --ink: #1f211f;
+            --cream: #f6f3ed;
+            --white: #fffefa;
+            --muted: #777a73;
+            --line: #e6e2da;
+            --accent: #b35f3e;
+            --green: #46584a;
+        }
+
+        body {
+            margin: 0;
+            background: var(--cream);
+            color: var(--ink);
+            font-family: Arial, sans-serif;
+        }
+
+        header {
+            background: rgba(255, 254, 250, 0.96);
+            border-bottom: 1px solid var(--line);
+        }
+
+        .navigation,
+        main {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .navigation {
+            min-height: 76px;
+            padding: 0 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand {
+            color: var(--ink);
+            font-family: Georgia, serif;
+            font-size: 26px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .shop-link {
+            color: var(--accent);
+            font-size: 13px;
+            text-decoration: none;
+        }
+
+        main {
+            padding: 50px 28px 80px;
+            animation: fade-up 550ms ease-out both;
+        }
+
+        .eyebrow {
+            margin: 0 0 10px;
+            color: var(--accent);
+            font-size: 11px;
+            font-weight: bold;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            margin: 0 0 28px;
+            font-family: Georgia, serif;
+            font-size: clamp(36px, 5vw, 52px);
+            font-weight: normal;
+            letter-spacing: -0.04em;
+        }
+
+        .cart-list {
+            border-top: 1px solid var(--line);
+        }
+
+        .cart-item {
+            display: grid;
+            grid-template-columns: 110px minmax(0, 1fr) auto;
+            align-items: center;
+            gap: 22px;
+            padding: 22px 0;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .item-image,
+        .item-placeholder {
+            width: 110px;
+            height: 125px;
+            object-fit: cover;
+            background: #e8e3d9;
+        }
+
+        .item-placeholder {
+            display: grid;
+            place-items: center;
+            padding: 10px;
+            color: var(--muted);
+            font-size: 11px;
+            text-align: center;
+        }
+
+        .item-details h2 {
+            margin: 0 0 8px;
+            font-family: Georgia, serif;
+            font-size: 21px;
+            font-weight: normal;
+        }
+
+        .item-details p {
+            margin: 5px 0;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .line-total {
+            margin-top: 10px !important;
+            color: var(--accent) !important;
+            font-weight: bold;
+        }
+
+        .item-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .quantity-form {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .quantity-button {
+            width: 36px;
+            height: 36px;
+            border: 1px solid var(--line);
+            background: var(--white);
+            color: var(--ink);
+            font-size: 18px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .quantity-button:hover:not(:disabled) {
+            background: #e8e3d9;
+        }
+
+        .quantity-button:disabled {
+            color: #aaa;
+            cursor: not-allowed;
+        }
+
+        .quantity-number {
+            min-width: 20px;
+            text-align: center;
+        }
+
+        .remove-button {
+            padding: 9px 12px;
+            border: 1px solid #d6b5a8;
+            background: transparent;
+            color: #934a35;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .remove-button:hover {
+            background: #fff0ec;
+        }
+
+        .summary {
+            max-width: 380px;
+            margin: 28px 0 0 auto;
+            padding: 22px;
+            background: var(--white);
+            border: 1px solid var(--line);
+        }
+
+        .subtotal {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .delivery-note {
+            margin: 12px 0 20px;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .checkout-button {
+            width: 100%;
+            min-height: 48px;
+            border: 0;
+            background: var(--ink);
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .checkout-button:hover {
+            background: var(--accent);
+        }
+
+        .continue-link {
+            display: inline-block;
+            margin-top: 25px;
+            color: var(--accent);
+            font-size: 13px;
+            text-decoration: none;
+        }
+
+        .empty-state {
+            padding: 50px 25px;
+            background: var(--white);
+            border: 1px solid var(--line);
+            color: var(--muted);
+            text-align: center;
+        }
+
+        .empty-state a {
+            color: var(--accent);
+        }
+
+        .error {
+            margin-bottom: 20px;
+            padding: 13px 15px;
+            border: 1px solid #e7c3ba;
+            background: #fff0ec;
+            color: #8d3426;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        footer {
+            padding: 28px 20px;
+            background: var(--ink);
+            color: #f4f1ea;
+            text-align: center;
+        }
+
+        footer p {
+            margin: 0;
+            font-family: Georgia, serif;
+            font-size: 17px;
+        }
+
+        @keyframes fade-up {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 700px) {
+            .navigation {
+                min-height: 68px;
+                padding: 0 18px;
+            }
+
+            main {
+                padding: 38px 18px 60px;
+            }
+
+            .cart-item {
+                grid-template-columns: 78px minmax(0, 1fr);
+                gap: 14px;
+            }
+
+            .item-image,
+            .item-placeholder {
+                width: 78px;
+                height: 100px;
+            }
+
+            .item-actions {
+                grid-column: 2;
+                flex-wrap: wrap;
+            }
+
+            .summary {
+                max-width: none;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="navigation">
+            <a class="brand" href="{% url 'home' %}">Vagabond's</a>
+            <a class="shop-link" href="{% url 'home' %}">Continue shopping →</a>
+        </div>
+    </header>
+
+    <main>
+        <p class="eyebrow">Your selection</p>
+        <h1>Your shopping cart</h1>
+
+        {% if stock_error %}
+            <p class="error">
+                Available stock changed. Please review the quantities in your cart.
+            </p>
+        {% endif %}
+
+        {% if cart_items %}
+            <div class="cart-list">
+                {% for item in cart_items %}
+                    <section class="cart-item">
+                        <div>
+                            {% if item.product.image %}
+                                <img
+                                    class="item-image"
+                                    src="{{ item.product.image.url }}"
+                                    alt="{{ item.product.name }}"
+                                >
+                            {% else %}
+                                <div class="item-placeholder">
+                                    Photo coming soon
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="item-details">
+                            <h2>{{ item.product.name }}</h2>
+
+                            {% if item.size %}
+                                <p>Size: {{ item.size }}</p>
+                            {% endif %}
+
+                            {% if item.color %}
+                                <p>Color: {{ item.color }}</p>
+                            {% endif %}
+
+                            <p>Available stock: {{ item.product.stock }}</p>
+                            <p class="line-total">
+                                ৳{{ item.line_total|floatformat:2 }}
+                            </p>
+                        </div>
+
+                        <div class="item-actions">
+                            <form
+                                class="quantity-form"
+                                method="post"
+                                action="{% url 'update_cart_quantity' item.index %}"
+                            >
+                                {% csrf_token %}
+
+                                <button
+                                    class="quantity-button"
+                                    type="submit"
+                                    name="action"
+                                    value="decrease"
+                                    aria-label="Decrease quantity"
+                                >−</button>
+
+                                <span class="quantity-number">
+                                    {{ item.quantity }}
+                                </span>
+
+                                <button
+                                    class="quantity-button"
+                                    type="submit"
+                                    name="action"
+                                    value="increase"
+                                    aria-label="Increase quantity"
+                                    {% if item.quantity >= item.product.stock %}disabled{% endif %}
+                                >+</button>
+                            </form>
+
+                            <form
+                                method="post"
+                                action="{% url 'remove_from_cart' item.index %}"
+                            >
+                                {% csrf_token %}
+                                <button class="remove-button" type="submit">
+                                    Remove
+                                </button>
+                            </form>
+                        </div>
+                    </section>
+                {% endfor %}
+            </div>
+
+            <section class="summary">
+                <div class="subtotal">
+                    <span>Items subtotal</span>
+                    <span>৳{{ total|floatformat:2 }}</span>
+                </div>
+
+               
+
+                <form method="get" action="{% url 'checkout' %}">
+                    <button class="checkout-button" type="submit">
+                        Continue to Checkout
+                    </button>
+                </form>
+            </section>
+        {% else %}
+            <div class="empty-state">
+                <p>Your cart is empty.</p>
+                <a href="{% url 'home' %}">Browse the collection</a>
+            </div>
+        {% endif %}
+
+        <a class="continue-link" href="{% url 'home' %}">
+            ← Back to the collection
+        </a>
+    </main>
+
+    <footer>
+        <p>Vagabond's — Made for everyday comfort.</p>
+    </footer>
+</body>
+</html>

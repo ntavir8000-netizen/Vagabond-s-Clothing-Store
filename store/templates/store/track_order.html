@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Order | Vagabond's</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        :root {
+            --ink: #1f211f;
+            --cream: #f6f3ed;
+            --white: #fffefa;
+            --muted: #777a73;
+            --line: #e6e2da;
+            --accent: #b35f3e;
+            --green: #46584a;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            background: var(--cream);
+            color: var(--ink);
+            font-family: Arial, sans-serif;
+        }
+
+        .announcement {
+            padding: 9px 16px;
+            background: var(--green);
+            color: white;
+            text-align: center;
+            font-size: 12px;
+            letter-spacing: 0.08em;
+        }
+
+        header {
+            background: var(--white);
+            border-bottom: 1px solid var(--line);
+        }
+
+        .navigation,
+        main {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .navigation {
+            min-height: 76px;
+            padding: 0 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand {
+            color: var(--ink);
+            font-family: Georgia, serif;
+            font-size: 26px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .shop-link,
+        .back-link {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            min-height: 44px;
+            padding: 0 16px;
+            border: 1px solid var(--ink);
+            background: var(--ink);
+            color: white;
+            font-size: 13px;
+            font-weight: bold;
+            text-decoration: none;
+            transition: background 0.2s ease, border-color 0.2s ease;
+        }
+
+        .shop-link:hover,
+        .back-link:hover {
+            border-color: var(--accent);
+            background: var(--accent);
+        }
+
+        main {
+            flex: 1;
+            padding: 45px 28px 70px;
+            animation: fade-up 550ms ease-out both;
+        }
+
+        .eyebrow {
+            margin: 0 0 10px;
+            color: var(--accent);
+            font-size: 11px;
+            font-weight: bold;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            margin: 0 0 12px;
+            font-family: Georgia, serif;
+            font-size: clamp(36px, 5vw, 52px);
+            font-weight: normal;
+            letter-spacing: -0.04em;
+        }
+
+        .intro {
+            margin: 0 0 26px;
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .tracking-form,
+        .order-card {
+            padding: 26px;
+            background: var(--white);
+            border: 1px solid var(--line);
+        }
+
+        .tracking-form {
+            margin-bottom: 24px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 12px;
+            align-items: end;
+        }
+
+        label {
+            display: block;
+            margin: 0 0 8px;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 0.04em;
+        }
+
+        input {
+            width: 100%;
+            min-height: 46px;
+            padding: 12px;
+            border: 1px solid var(--line);
+            background: white;
+            color: var(--ink);
+            font: inherit;
+            font-size: 14px;
+        }
+
+        input:focus {
+            outline: 2px solid rgba(179, 95, 62, 0.35);
+            border-color: var(--accent);
+        }
+
+        button {
+            min-height: 46px;
+            padding: 0 20px;
+            border: 0;
+            background: var(--ink);
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        button:hover {
+            background: var(--accent);
+        }
+
+        .error {
+            margin: 0 0 18px;
+            padding: 13px 15px;
+            border: 1px solid #e7c3ba;
+            background: #fff0ec;
+            color: #8d3426;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .order-card {
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 24px;
+            animation: fade-up 450ms ease-out both;
+        }
+
+        .order-card::before {
+            content: "V";
+            position: absolute;
+            top: -45px;
+            right: 8px;
+            color: var(--green);
+            font-family: Georgia, serif;
+            font-size: 200px;
+            font-style: italic;
+            line-height: 1;
+            opacity: 0.045;
+            pointer-events: none;
+            user-select: none;
+        }
+
+        .order-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .order-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .order-heading h2 {
+            margin: 0;
+            font-family: Georgia, serif;
+            font-size: 26px;
+            font-weight: normal;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 8px 12px;
+            background: #e3eadf;
+            color: #38513e;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .order-meta {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 22px;
+        }
+
+        .meta-item {
+            padding: 14px;
+            background: #f0eee7;
+        }
+
+        .meta-label {
+            display: block;
+            margin-bottom: 6px;
+            color: var(--muted);
+            font-size: 11px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .meta-value {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .items-title {
+            margin: 0 0 8px;
+            font-family: Georgia, serif;
+            font-size: 20px;
+            font-weight: normal;
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--line);
+            font-size: 13px;
+        }
+
+        .item-description {
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        .item-total {
+            white-space: nowrap;
+            font-weight: bold;
+        }
+
+        .order-total {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            padding-top: 18px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .order-total span:last-child {
+            color: var(--accent);
+        }
+
+        footer {
+            padding: 26px 20px;
+            background: var(--ink);
+            color: #f4f1ea;
+            text-align: center;
+        }
+
+        footer p {
+            margin: 0;
+            font-family: Georgia, serif;
+            font-size: 17px;
+        }
+
+        @keyframes fade-up {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 700px) {
+            .navigation {
+                min-height: 68px;
+                padding: 12px 18px;
+                gap: 12px;
+            }
+
+            main {
+                padding: 35px 18px 55px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-grid button {
+                width: 100%;
+            }
+
+            .tracking-form,
+            .order-card {
+                padding: 20px;
+            }
+
+            .order-meta {
+                grid-template-columns: 1fr;
+            }
+
+            .order-card::before {
+                top: -25px;
+                font-size: 150px;
+            }
+
+            .shop-link {
+                padding: 0 12px;
+                font-size: 12px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+  
+
+    <header>
+        <div class="navigation">
+            <a class="brand" href="{% url 'home' %}">Vagabond's</a>
+            <a class="shop-link" href="{% url 'home' %}">
+                ← Back to shop
+            </a>
+        </div>
+    </header>
+
+    <main>
+        <p class="eyebrow">Order updates</p>
+        <h1>Track your order</h1>
+        <p class="intro">
+            Enter the order number and phone number used at checkout.
+        </p>
+
+        <form class="tracking-form" method="post">
+            {% csrf_token %}
+
+            {% if error %}
+                <p class="error">{{ error }}</p>
+            {% endif %}
+
+            <div class="form-grid">
+                <div>
+                    <label for="order_id">Order number</label>
+                    <input
+                        id="order_id"
+                        name="order_id"
+                        type="number"
+                        min="1"
+                        value="{{ order_id }}"
+                        required
+                    >
+                </div>
+
+                <div>
+                    <label for="phone">Phone number</label>
+                    <input
+                        id="phone"
+                        name="phone"
+                        type="tel"
+                        value="{{ phone }}"
+                        required
+                    >
+                </div>
+
+                <button type="submit">Find Order</button>
+            </div>
+        </form>
+
+        {% if order %}
+            <section class="order-card">
+                <div class="order-content">
+                    <div class="order-heading">
+                        <h2>Order #{{ order.id }}</h2>
+                        <span class="status">
+                            {{ order.get_status_display }}
+                        </span>
+                    </div>
+
+                    <div class="order-meta">
+                        <div class="meta-item">
+                            <span class="meta-label">Delivery area</span>
+                            <span class="meta-value">
+                                {{ order.get_delivery_area_display }}
+                            </span>
+                        </div>
+
+                        <div class="meta-item">
+                            <span class="meta-label">Payment method</span>
+                            <span class="meta-value">Cash on Delivery</span>
+                        </div>
+                    </div>
+
+                    <h3 class="items-title">Items in this order</h3>
+
+                    {% for item in order.items.all %}
+                        <div class="order-item">
+                            <div>
+                                <strong>
+                                    {{ item.product_name }} × {{ item.quantity }}
+                                </strong>
+
+                                <div class="item-description">
+                                    {% if item.size %}Size: {{ item.size }}{% endif %}
+                                    {% if item.size and item.color %} · {% endif %}
+                                    {% if item.color %}Color: {{ item.color }}{% endif %}
+                                </div>
+                            </div>
+
+                            <span class="item-total">
+                                ৳{{ item.line_total|floatformat:2 }}
+                            </span>
+                        </div>
+                    {% endfor %}
+
+                    <div class="order-item">
+                        <span>Delivery fee</span>
+                        <span class="item-total">
+                            ৳{{ order.delivery_fee|floatformat:2 }}
+                        </span>
+                    </div>
+
+                    <div class="order-total">
+                        <span>Order total</span>
+                        <span>৳{{ order.total|floatformat:2 }}</span>
+                    </div>
+                </div>
+            </section>
+        {% endif %}
+
+        <a class="back-link" href="{% url 'home' %}">
+            ← Return to shop
+        </a>
+    </main>
+
+    <footer>
+        <p>Vagabond's — Made for everyday comfort.</p>
+    </footer>
+</body>
+</html>

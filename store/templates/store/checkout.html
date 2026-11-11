@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout | Vagabond's</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        :root {
+            --ink: #1f211f;
+            --cream: #f6f3ed;
+            --white: #fffefa;
+            --muted: #777a73;
+            --line: #e6e2da;
+            --accent: #b35f3e;
+            --green: #46584a;
+        }
+
+        body {
+            margin: 0;
+            background: var(--cream);
+            color: var(--ink);
+            font-family: Arial, sans-serif;
+        }
+
+        .announcement {
+            padding: 9px 16px;
+            background: var(--green);
+            color: white;
+            text-align: center;
+            font-size: 12px;
+            letter-spacing: 0.08em;
+        }
+
+        header {
+            background: rgba(255, 254, 250, 0.96);
+            border-bottom: 1px solid var(--line);
+        }
+
+        .navigation,
+        main {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .navigation {
+            min-height: 76px;
+            padding: 0 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand {
+            color: var(--ink);
+            font-family: Georgia, serif;
+            font-size: 26px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .cart-link,
+        .back-link {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            padding: 11px 16px;
+            border: 1px solid var(--accent);
+            background: var(--white);
+            color: var(--accent);
+            font-size: 13px;
+            font-weight: bold;
+            text-decoration: none;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+
+        .cart-link:hover,
+        .back-link:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        main {
+            padding: 45px 28px 80px;
+            animation: fade-up 550ms ease-out both;
+        }
+
+        .eyebrow {
+            margin: 0 0 10px;
+            color: var(--accent);
+            font-size: 11px;
+            font-weight: bold;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            margin: 0 0 12px;
+            font-family: Georgia, serif;
+            font-size: clamp(36px, 5vw, 52px);
+            font-weight: normal;
+            letter-spacing: -0.04em;
+        }
+
+        .intro {
+            margin: 0 0 30px;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .checkout-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
+            align-items: start;
+            gap: 24px;
+        }
+
+        .details-panel,
+        .summary-panel {
+            padding: 26px;
+            background: var(--white);
+            border: 1px solid var(--line);
+        }
+
+        .summary-panel {
+            position: relative;
+            overflow: hidden;
+            background: rgba(255, 254, 250, 0.94);
+        }
+
+        .summary-panel::before {
+            content: "V";
+            position: absolute;
+            top: -55px;
+            right: 5px;
+            color: var(--green);
+            font-family: Georgia, serif;
+            font-size: 250px;
+            font-style: italic;
+            line-height: 1;
+            opacity: 0.055;
+            pointer-events: none;
+            user-select: none;
+        }
+
+        .summary-panel > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .panel-title {
+            margin: 0 0 18px;
+            font-family: Georgia, serif;
+            font-size: 24px;
+            font-weight: normal;
+        }
+
+        label {
+            display: block;
+            margin: 18px 0 8px;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 0.04em;
+        }
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+            min-height: 46px;
+            padding: 12px;
+            border: 1px solid var(--line);
+            border-radius: 0;
+            background: white;
+            color: var(--ink);
+            font: inherit;
+            font-size: 14px;
+        }
+
+        textarea {
+            min-height: 110px;
+            resize: vertical;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: 2px solid rgba(179, 95, 62, 0.35);
+            border-color: var(--accent);
+        }
+
+        .payment-title {
+            margin: 22px 0 10px;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 0.04em;
+        }
+
+        .payment-option {
+            display: flex;
+            align-items: flex-start;
+            gap: 11px;
+            margin-top: 10px;
+            padding: 14px;
+            border: 1px solid var(--line);
+            background: white;
+            cursor: pointer;
+        }
+
+        .payment-option input {
+            width: 17px;
+            min-height: 17px;
+            height: 17px;
+            margin: 1px 0 0;
+            accent-color: var(--green);
+            flex: 0 0 auto;
+        }
+
+        .payment-option-text {
+            display: block;
+        }
+
+        .payment-option-title {
+            display: block;
+            margin-bottom: 4px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .payment-option-description {
+            display: block;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .payment-note {
+            margin-top: 15px;
+            padding: 14px;
+            background: #f0eee7;
+            color: #4f554d;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .error {
+            margin: 0 0 18px;
+            padding: 13px 15px;
+            border: 1px solid #e7c3ba;
+            background: #fff0ec;
+            color: #8d3426;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .summary-item {
+            padding: 13px 0;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .summary-item-name {
+            margin: 0 0 5px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .summary-item-detail {
+            margin: 0;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            margin: 15px 0;
+            font-size: 13px;
+        }
+
+        .grand-total {
+            margin-top: 18px;
+            padding-top: 17px;
+            border-top: 1px solid var(--line);
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .place-order-button {
+            width: 100%;
+            min-height: 50px;
+            margin-top: 16px;
+            border: 0;
+            background: var(--ink);
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .place-order-button:hover {
+            background: var(--accent);
+        }
+
+        .back-link {
+            margin-top: 24px;
+        }
+
+        @keyframes fade-up {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 760px) {
+            .navigation {
+                min-height: 68px;
+                padding: 0 18px;
+            }
+
+            main {
+                padding: 35px 18px 60px;
+            }
+
+            .checkout-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .details-panel,
+            .summary-panel {
+                padding: 20px;
+            }
+
+            .summary-panel::before {
+                top: -30px;
+                right: 0;
+                font-size: 190px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="navigation">
+            <a class="brand" href="{% url 'home' %}">Vagabond's</a>
+            <a class="cart-link" href="{% url 'cart' %}">
+                ← Back to cart
+            </a>
+        </div>
+    </header>
+
+    <main>
+        <p class="eyebrow">Almost yours</p>
+        <h1>Checkout</h1>
+        <p class="intro">Add your delivery details and review your order.</p>
+
+        <form method="post" class="checkout-layout">
+            {% csrf_token %}
+
+            <section class="details-panel">
+                <h2 class="panel-title">Delivery details</h2>
+
+                {% if error %}
+                    <p class="error">{{ error }}</p>
+                {% endif %}
+
+                <label for="customer_name">Your name</label>
+                <input
+                    id="customer_name"
+                    name="customer_name"
+                    type="text"
+                    value="{{ customer_name }}"
+                    autocomplete="name"
+                    required
+                >
+
+                <label for="phone">Phone number</label>
+                <input
+                    id="phone"
+                    name="phone"
+                    type="tel"
+                    value="{{ phone }}"
+                    autocomplete="tel"
+                    required
+                >
+
+                <label for="address">Full delivery address</label>
+                <textarea
+                    id="address"
+                    name="address"
+                    autocomplete="street-address"
+                    required
+                >{{ address }}</textarea>
+
+                <label for="delivery_area">Delivery area</label>
+                <select id="delivery_area" name="delivery_area" required>
+                    {% for value, label, fee in delivery_options %}
+                        <option
+                            value="{{ value }}"
+                            data-fee="{{ fee }}"
+                            {% if delivery_area == value %}selected{% endif %}
+                        >
+                            {{ label }} — ৳{{ fee|floatformat:0 }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <p class="payment-title">Payment method</p>
+
+                <label class="payment-option">
+                    <input
+                        type="radio"
+                        name="payment_method"
+                        value="cod"
+                        {% if payment_method == "cod" %}checked{% endif %}
+                    >
+                    <span class="payment-option-text">
+                        <span class="payment-option-title">
+                            Cash on Delivery
+                        </span>
+                        <span class="payment-option-description">
+                            Pay when your order arrives.
+                        </span>
+                    </span>
+                </label>
+
+                <label class="payment-option">
+                    <input
+                        type="radio"
+                        name="payment_method"
+                        value="sslcommerz"
+                        {% if payment_method == "sslcommerz" %}checked{% endif %}
+                    >
+                    <span class="payment-option-text">
+                        <span class="payment-option-title">
+                            Online payment — SSLCOMMERZ Sandbox
+                        </span>
+                        <span class="payment-option-description">
+                            Test checkout only. Sandbox payments do not charge
+                            real money.
+                        </span>
+                    </span>
+                </label>
+
+                <div class="payment-note">
+                    <strong>Delivery fee:</strong>
+                    ৳80 inside Dhaka and ৳130 outside Dhaka.
+                </div>
+            </section>
+
+            <aside class="summary-panel">
+                <h2 class="panel-title">Order summary</h2>
+
+                {% for item in cart_items %}
+                    <div class="summary-item">
+                        <p class="summary-item-name">
+                            {{ item.product.name }} × {{ item.quantity }}
+                        </p>
+                        <p class="summary-item-detail">
+                            {% if item.size %}Size: {{ item.size }}{% endif %}
+                            {% if item.size and item.color %} · {% endif %}
+                            {% if item.color %}Color: {{ item.color }}{% endif %}
+                        </p>
+                        <p class="summary-item-detail">
+                            ৳{{ item.line_total|floatformat:2 }}
+                        </p>
+                    </div>
+                {% endfor %}
+
+                <div class="summary-row">
+                    <span>Items subtotal</span>
+                    <span id="subtotal" data-amount="{{ subtotal }}">
+                        ৳{{ subtotal|floatformat:2 }}
+                    </span>
+                </div>
+
+                <div class="summary-row">
+                    <span>Delivery fee</span>
+                    <span id="delivery-fee">
+                        ৳{{ delivery_fee|floatformat:2 }}
+                    </span>
+                </div>
+
+                <div class="summary-row grand-total">
+                    <span>Total</span>
+                    <span id="grand-total">৳{{ total|floatformat:2 }}</span>
+                </div>
+
+                <button class="place-order-button" type="submit">
+                    Continue to payment / place order
+                </button>
+            </aside>
+        </form>
+
+        <a class="back-link" href="{% url 'cart' %}">
+            ← Return to cart
+        </a>
+    </main>
+
+    <script>
+        const deliverySelect = document.getElementById("delivery_area");
+        const subtotalElement = document.getElementById("subtotal");
+        const deliveryFeeElement = document.getElementById("delivery-fee");
+        const grandTotalElement = document.getElementById("grand-total");
+
+        function updateOrderTotal() {
+            const selectedOption =
+                deliverySelect.options[deliverySelect.selectedIndex];
+
+            const subtotal = Number(subtotalElement.dataset.amount);
+            const deliveryFee = Number(selectedOption.dataset.fee);
+            const total = subtotal + deliveryFee;
+
+            deliveryFeeElement.textContent =
+                "৳" + deliveryFee.toFixed(2);
+            grandTotalElement.textContent =
+                "৳" + total.toFixed(2);
+        }
+
+        deliverySelect.addEventListener("change", updateOrderTotal);
+        updateOrderTotal();
+    </script>
+</body>
+</html>

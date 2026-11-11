@@ -17,7 +17,7 @@ SECRET_KEY = config(
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["vagabond-s-clothing-store-1.onrender.com", "127.0.0.1", "localhost"]
 
 
 INSTALLED_APPS = [

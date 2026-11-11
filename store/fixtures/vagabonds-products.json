@@ -1,0 +1,17 @@
+[
+{
+  "model": "store.product",
+  "pk": 2,
+  "fields": {
+    "name": "PRemium T shirt",
+    "category": "other",
+    "description": "",
+    "price": "700.00",
+    "image": "products/pngtree-red-t-shirt-png-image_12322366_eyzul0G.png",
+    "sizes": "S,M",
+    "colors": "Red",
+    "stock": 4,
+    "available": true
+  }
+}
+]

@@ -4,6 +4,7 @@ Django settings for config project.
 
 from pathlib import Path
 
+import dj_database_url
 from decouple import config
 
 
@@ -17,7 +18,11 @@ SECRET_KEY = config(
 
 DEBUG = True
 
-ALLOWED_HOSTS = ["vagabond-s-clothing-store-1.onrender.com", "127.0.0.1", "localhost"]
+ALLOWED_HOSTS = [
+    "vagabond-s-clothing-store-1.onrender.com",
+    "127.0.0.1",
+    "localhost",
+]
 
 
 INSTALLED_APPS = [
@@ -64,12 +69,19 @@ TEMPLATES = [
 WSGI_APPLICATION = "config.wsgi.application"
 
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+if config("RENDER", default=False, cast=bool):
+    # Render supplies RENDER=true. Read the database URL from the web service.
+    DATABASES = {
+        "default": dj_database_url.parse(config("DATABASE_URL")),
     }
-}
+else:
+    # Local development uses the existing database beside manage.py.
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -101,11 +113,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 LANGUAGE_CODE = "en-us"
-
 TIME_ZONE = "UTC"
-
 USE_I18N = True
-
 USE_TZ = True
 
 

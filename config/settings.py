@@ -1,5 +1,5 @@
 """
-Django settings for config project.
+Django settings for the Vagabond's store.
 """
 
 from pathlib import Path
@@ -9,12 +9,15 @@ from decouple import config
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+ON_RENDER = config("RENDER", default=False, cast=bool)
 
-
-SECRET_KEY = config(
-    "DJANGO_SECRET_KEY",
-    default="django-insecure-local-development-key-change-before-deployment",
-)
+if ON_RENDER:
+    SECRET_KEY = config("DJANGO_SECRET_KEY")
+else:
+    SECRET_KEY = config(
+        "DJANGO_SECRET_KEY",
+        default="django-insecure-local-development-key-change-before-deployment",
+    )
 
 DEBUG = True
 
@@ -49,7 +52,6 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "config.urls"
 
-
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -65,17 +67,14 @@ TEMPLATES = [
     },
 ]
 
-
 WSGI_APPLICATION = "config.wsgi.application"
 
 
-if config("RENDER", default=False, cast=bool):
-    # Render supplies RENDER=true. Read the database URL from the web service.
+if ON_RENDER:
     DATABASES = {
         "default": dj_database_url.parse(config("DATABASE_URL")),
     }
 else:
-    # Local development uses the existing database beside manage.py.
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
@@ -119,13 +118,32 @@ USE_TZ = True
 
 
 STATIC_URL = "static/"
-
-MEDIA_URL = "media/"
+MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
+
+USE_CLOUDINARY_MEDIA = ON_RENDER and config(
+    "USE_CLOUDINARY_MEDIA",
+    default=False,
+    cast=bool,
+)
+
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}
+
+if USE_CLOUDINARY_MEDIA:
+    INSTALLED_APPS += ["cloudinary", "cloudinary_storage"]
+    STORAGES["default"] = {
+        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+    }
 
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
 
 SSLCOMMERZ_STORE_ID = config("SSLCOMMERZ_STORE_ID", default="")
 SSLCOMMERZ_STORE_PASS = config("SSLCOMMERZ_STORE_PASS", default="")

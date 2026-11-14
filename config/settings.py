@@ -1,6 +1,4 @@
-"""
-Django settings for the Vagabond's store.
-"""
+"""Django settings for the Vagabond's store."""
 
 from pathlib import Path
 
@@ -19,13 +17,21 @@ else:
         default="django-insecure-local-development-key-change-before-deployment",
     )
 
-DEBUG = True
+DEBUG = not ON_RENDER
 
 ALLOWED_HOSTS = [
     "vagabond-s-clothing-store-1.onrender.com",
     "127.0.0.1",
     "localhost",
 ]
+
+if ON_RENDER:
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+    CSRF_TRUSTED_ORIGINS = [
+        "https://vagabond-s-clothing-store-1.onrender.com",
+    ]
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
 
 
 INSTALLED_APPS = [
@@ -41,6 +47,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -117,15 +124,11 @@ USE_I18N = True
 USE_TZ = True
 
 
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
-
-USE_CLOUDINARY_MEDIA = ON_RENDER and config(
-    "USE_CLOUDINARY_MEDIA",
-    default=False,
-    cast=bool,
-)
 
 STORAGES = {
     "default": {
@@ -136,11 +139,22 @@ STORAGES = {
     },
 }
 
+if ON_RENDER:
+    STORAGES["staticfiles"]["BACKEND"] = (
+        "whitenoise.storage.CompressedManifestStaticFilesStorage"
+    )
+
+USE_CLOUDINARY_MEDIA = ON_RENDER and config(
+    "USE_CLOUDINARY_MEDIA",
+    default=False,
+    cast=bool,
+)
+
 if USE_CLOUDINARY_MEDIA:
     INSTALLED_APPS += ["cloudinary", "cloudinary_storage"]
-    STORAGES["default"] = {
-        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
-    }
+    STORAGES["default"]["BACKEND"] = (
+        "cloudinary_storage.storage.MediaCloudinaryStorage"
+    )
 
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
